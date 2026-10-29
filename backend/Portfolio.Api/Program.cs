@@ -16,9 +16,10 @@ var config = builder.Configuration;
 
 // ---- Database (SQLite). Relative "Data Source" paths resolve against the content root. ----
 var connection = new SqliteConnectionStringBuilder(config.GetConnectionString("Default") ?? "Data Source=App_Data/portfolio.db");
-if (!connection.DataSource.StartsWith(':') && !connection.DataSource.StartsWith("file:") && !Path.IsPathRooted(connection.DataSource))
+if (!connection.DataSource.StartsWith(':') && !connection.DataSource.StartsWith("file:"))
 {
-    connection.DataSource = Path.Combine(builder.Environment.ContentRootPath, connection.DataSource);
+    if (!Path.IsPathRooted(connection.DataSource))
+        connection.DataSource = Path.Combine(builder.Environment.ContentRootPath, connection.DataSource);
     Directory.CreateDirectory(Path.GetDirectoryName(connection.DataSource)!);
 }
 builder.Services.AddDbContext<PortfolioDbContext>(o => o.UseSqlite(connection.ConnectionString));
