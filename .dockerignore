@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+backend/Portfolio.Api/App_Data/
+backend/Portfolio.Api.Tests/
+.git/
+.github/
