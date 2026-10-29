@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>%%TITLE%%</title>
+  <meta name="description" content="%%DESCRIPTION%%">
+  <meta name="robots" content="%%ROBOTS%%">
+  <link rel="canonical" href="%%CANONICAL%%">
+  <meta property="og:type" content="%%OG_TYPE%%">
+  <meta property="og:site_name" content="%%SITE_NAME%%">
+  <meta property="og:title" content="%%TITLE%%">
+  <meta property="og:description" content="%%DESCRIPTION%%">
+  <meta property="og:url" content="%%CANONICAL%%">
+  <meta property="og:image" content="%%OG_IMAGE%%">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="%%TITLE%%">
+  <meta name="twitter:description" content="%%DESCRIPTION%%">
+  <meta name="twitter:image" content="%%OG_IMAGE%%">
+  <meta name="theme-color" content="#0e7490">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <a class="visually-hidden-focusable skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header sticky-top">
+    <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/" data-route>
+          <span class="brand-mark" aria-hidden="true" id="brand-mark"></span>
+          <span class="fw-semibold" id="brand-name">Portfolio</span>
+        </a>
+        <div class="d-flex align-items-center gap-1 order-lg-last">
+          <button type="button" class="btn btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+            <i class="bi bi-moon-stars" aria-hidden="true"></i>
+          </button>
+          <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav-links"
+                  aria-controls="nav-links" aria-expanded="false" aria-label="Open menu">
+            <i class="bi bi-list fs-3" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="nav-links">
+          <ul class="navbar-nav ms-auto me-lg-2" id="nav-list">
+            <li class="nav-item"><a class="nav-link" href="/#about" data-section-link="about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#skills" data-section-link="skills">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#experience" data-section-link="experience">Experience</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#projects" data-section-link="projects">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#education" data-section-link="education">Education</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#services" data-section-link="services">Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="/#contact" data-section-link="contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div id="app-status" class="container py-5 my-5 text-center" role="status">
+      <div class="spinner-border text-primary" aria-hidden="true"></div>
+      <p class="mt-3 text-body-secondary">Loading portfolio…</p>
+    </div>
+
+    <div id="home" hidden>
+      <section id="hero" class="hero" aria-label="Introduction"></section>
+      <section id="about" class="section" aria-labelledby="about-title"></section>
+      <section id="skills" class="section section-alt" aria-labelledby="skills-title"></section>
+      <section id="experience" class="section" aria-labelledby="experience-title"></section>
+      <section id="projects" class="section section-alt" aria-labelledby="projects-title"></section>
+      <section id="education" class="section" aria-labelledby="education-title"></section>
+      <section id="services" class="section section-alt" aria-labelledby="services-title"></section>
+      <section id="contact" class="section" aria-labelledby="contact-title"></section>
+    </div>
+
+    <div id="project-detail" class="section" hidden></div>
+    <div id="not-found" class="section" hidden></div>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toasts"></div>
+
+  <noscript>
+    <div class="container py-5"><p>This portfolio needs JavaScript to display its content.</p></div>
+  </noscript>
+  <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/js/public/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+bin/
+obj/
+.vs/
+*.user
+
+# SQLite database, uploads and the seed CV live here — back up this folder, don't commit it.
+backend/Portfolio.Api/App_Data/

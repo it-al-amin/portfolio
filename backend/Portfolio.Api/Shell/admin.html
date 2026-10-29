@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin · Portfolio</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="admin-body">
+  <a class="visually-hidden-focusable skip-link" href="#admin-main">Skip to main content</a>
+  <div id="admin-root">
+    <div class="d-flex justify-content-center align-items-center min-vh-100" role="status">
+      <div class="spinner-border text-primary" aria-hidden="true"></div>
+      <span class="visually-hidden">Loading admin…</span>
+    </div>
+  </div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toasts"></div>
+  <noscript><p class="p-4">The admin dashboard requires JavaScript.</p></noscript>
+  <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/js/admin/app.js"></script>
+</body>
+</html>
