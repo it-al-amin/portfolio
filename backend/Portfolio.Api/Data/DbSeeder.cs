@@ -142,11 +142,35 @@ public static class DbSeeder
                     "Own the procurement APIs end to end: entities, EF Core migrations on Oracle, services, validation and role-based endpoint permissions.",
                     "Resolve QA issues sprint by sprint and write API integration guides for front-end developers.",
                 ],
-                LiveUrl = null, // Internal company system — add a link in Admin → Projects only if it may be public.
+                LiveUrl = "http://84.247.144.67/login",
             },
             new Project
             {
                 DisplayOrder = 1, IsFeatured = true, IsPublished = true,
+                Slug = "emergency-care-services", Title = "Emergency & Care Services", Category = "Healthcare Platform",
+                Summary = "Bengali/English platform that helps families in Bangladesh, especially in towns and villages, request verified nurse home visits, patient transport and elder care.",
+                Description = "Staff coordinators triage each request, assign an approved local provider and track it through to payment (cash, bKash or Nagad). Life-threatening cases are handed off to 999/16263 and never dispatched through the platform. A pilot is planned for Netrokona and Mymensingh, with admin-controlled area rollout and a per-request service fee.",
+                Technologies = [".NET 10", "ASP.NET Core", "Entity Framework Core", "MySQL", "React", "TypeScript", "Vite", "JWT", "Docker", "GitHub Actions"],
+                Features =
+                [
+                    "Bengali and English interface with area search and \"find areas near me\"",
+                    "Request flow for nurse home visits, patient transport and elder care, with public request tracking",
+                    "Coordinator triage and assignment of approved local providers, tracked through to payment (cash, bKash, Nagad)",
+                    "Emergency safeguard: life-threatening cases are directed to 999/16263 and never dispatched",
+                    "Geography-based area availability with admin-controlled rollout",
+                ],
+                Responsibilities =
+                [
+                    "Designed a modular-monolith ASP.NET Core backend with EF Core and MySQL, and a request state machine for the full service lifecycle.",
+                    "Implemented JWT and Google sign-in, role-based access, configurable SMS notifications and rate limiting.",
+                    "Built the React + TypeScript + Vite front end.",
+                    "Set up Docker and GitHub Actions CI with domain and integration tests.",
+                ],
+                LiveUrl = "https://emergency-care-service.vercel.app/",
+            },
+            new Project
+            {
+                DisplayOrder = 2, IsFeatured = true, IsPublished = true,
                 Slug = "bonik-online", Title = "Bonik Online", Category = "E-Commerce & Business Management",
                 Summary = "Multi-tenant e-commerce and business management platform used by multiple businesses to manage end-to-end operations.",
                 Description = "A multi-tenant platform covering products, inventory, purchases, sales, customers and orders, plus accounting, transaction tracking, reporting and business analytics.",
@@ -162,11 +186,11 @@ public static class DbSeeder
                     "Built ASP.NET Core RESTful APIs for products, inventory, purchases, sales, orders, accounting and reporting, integrated with a Next.js/React/TypeScript front end.",
                     "Designed and optimized MySQL schemas, relationships and queries; built reusable CRUD, validation and workflow components across modules.",
                 ],
-                LiveUrl = "http://qa.bonik.online/",
+                LiveUrl = "https://prod.bonik.online/",
             },
             new Project
             {
-                DisplayOrder = 2, IsFeatured = true, IsPublished = true,
+                DisplayOrder = 3, IsFeatured = true, IsPublished = true,
                 Slug = "ccdv-climate-portal", Title = "CCDV Climate Portal", Category = "Content Management Portal",
                 Summary = "Climate portal with an admin dashboard for managing content, publications, users, donations, orders and community interactions.",
                 Technologies = ["ASP.NET Core", "C#", "React", "TypeScript", "MySQL", "Entity Framework Core"],
@@ -186,7 +210,7 @@ public static class DbSeeder
             },
             new Project
             {
-                DisplayOrder = 3, IsFeatured = true, IsPublished = true,
+                DisplayOrder = 4, IsFeatured = true, IsPublished = true,
                 Slug = "look-space-solutions", Title = "Look Space Solutions", Category = "Corporate & Career Platform",
                 Summary = "Corporate website and career management platform with dynamic job and content management.",
                 Technologies = ["ASP.NET Core", "C#", "React", "TypeScript", "MySQL", "Entity Framework Core"],
@@ -205,7 +229,7 @@ public static class DbSeeder
             },
             new Project
             {
-                DisplayOrder = 4, IsPublished = true,
+                DisplayOrder = 5, IsPublished = true,
                 Slug = "employee-onboarding-system", Title = "Employee Onboarding System", Category = "HR & Document Automation",
                 Summary = "Secure onboarding APIs for collecting user input, processing documents and capturing signatures.",
                 Technologies = ["ASP.NET Core", "C#", "RESTful APIs", "JWT", "Repository Pattern"],
@@ -225,7 +249,7 @@ public static class DbSeeder
             },
             new Project
             {
-                DisplayOrder = 5, IsPublished = true,
+                DisplayOrder = 6, IsPublished = true,
                 Slug = "imedicine-doctor", Title = "I Medicine Doctor — Doctor Admin Panel", Category = "Healthcare",
                 Summary = "Responsive admin panel for doctors to manage profiles, chambers, appointments, patient records and online prescriptions.",
                 Technologies = ["Angular", "Bootstrap"],
@@ -240,7 +264,7 @@ public static class DbSeeder
             },
             new Project
             {
-                DisplayOrder = 6, IsPublished = true,
+                DisplayOrder = 7, IsPublished = true,
                 Slug = "document-management-system", Title = "Document Management System (DMS)", Category = "Desktop Application",
                 Summary = "Windows Forms application that watches folders, captures incoming files in real time and syncs them to a central server.",
                 Technologies = ["C#", "WinForms", "SQLite"],
