@@ -51,7 +51,7 @@ public class BackupOptions
             var missing = new[] { (nameof(Bucket), Bucket), (nameof(AccessKeyId), AccessKeyId), (nameof(SecretAccessKey), SecretAccessKey) }
                 .Where(x => string.IsNullOrWhiteSpace(x.Item2)).Select(x => "Backup__" + x.Item1).ToList();
             if (missing.Count > 0)
-                throw new InvalidOperationException($"Backups are enabled but {string.Join(", ", missing)} is not set.");
+                throw new InvalidOperationException($"Backups are enabled but {string.Join(", ", missing)} {(missing.Count == 1 ? "is" : "are")} not set. Add {(missing.Count == 1 ? "it" : "them")} in the host's environment settings (Render: service → Environment).");
         }
         else if (Provider.Equals("FileSystem", StringComparison.OrdinalIgnoreCase))
         {

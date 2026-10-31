@@ -59,12 +59,23 @@ public sealed class S3ObjectStore : IObjectStore, IDisposable
         else
         {
             config.ServiceURL = o.ServiceUrl;
-            config.AuthenticationRegion = o.Region;
+            config.AuthenticationRegion = RegionFor(o.ServiceUrl, o.Region);
         }
         _client = new AmazonS3Client(new BasicAWSCredentials(o.AccessKeyId, o.SecretAccessKey), config);
         _bucket = o.Bucket!;
         _prefix = o.Prefix;
         Description = $"s3://{_bucket}/{_prefix}";
+    }
+
+    /// <summary>
+    /// With Region "auto", takes the region from endpoints shaped like https://s3.&lt;region&gt;.example.com
+    /// (Backblaze B2, Wasabi, AWS); other endpoints such as Cloudflare R2 keep "auto".
+    /// </summary>
+    public static string RegionFor(string serviceUrl, string region)
+    {
+        if (!region.Equals("auto", StringComparison.OrdinalIgnoreCase) || !Uri.TryCreate(serviceUrl, UriKind.Absolute, out var uri)) return region;
+        var labels = uri.Host.Split('.');
+        return labels.Length >= 4 && labels[0] == "s3" ? labels[1] : region;
     }
 
     public bool IsEnabled => true;

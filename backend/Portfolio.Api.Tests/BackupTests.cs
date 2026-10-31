@@ -152,6 +152,13 @@ public sealed class BackupTests : IDisposable
         Assert.DoesNotContain(keys[^1], kept);
     }
 
+    [Theory]
+    [InlineData("https://s3.us-east-005.backblazeb2.com", "auto", "us-east-005")]
+    [InlineData("https://abc123.r2.cloudflarestorage.com", "auto", "auto")]
+    [InlineData("https://s3.us-east-005.backblazeb2.com", "eu-central-003", "eu-central-003")]
+    public void Region_is_taken_from_the_endpoint_when_auto(string url, string region, string expected) =>
+        Assert.Equal(expected, S3ObjectStore.RegionFor(url, region));
+
     [Fact]
     public void Verify_rejects_non_database_files()
     {

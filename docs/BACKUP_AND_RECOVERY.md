@@ -53,7 +53,7 @@ Optional: turn on bucket versioning or object lock for extra protection against 
 | `Backup__Enabled` | `true` | In render.yaml |
 | `Backup__Provider` | `S3` | In render.yaml |
 | `Backup__ServiceUrl` | `https://<account-id>.r2.cloudflarestorage.com` | Secret. Leave empty for AWS S3 |
-| `Backup__Region` | `auto` (R2), `us-west-004` (B2), or the AWS region | In render.yaml. For B2 or AWS, edit it there |
+| `Backup__Region` | `auto` | In render.yaml. With `auto` the region is read from endpoints like `s3.<region>.backblazeb2.com`; R2 stays `auto` |
 | `Backup__Bucket` | `portfolio-backups` | Secret |
 | `Backup__AccessKeyId` | key ID | Secret |
 | `Backup__SecretAccessKey` | secret key | Secret |
