@@ -275,6 +275,28 @@ public static class DbSeeder
                     "Local SQLite storage for data and file logs",
                     "Starts automatically with Windows via Task Scheduler or Registry settings",
                 ],
+            },
+            new Project
+            {
+                DisplayOrder = 8, IsPublished = true,
+                Slug = "portfolio-cms", Title = "Personal Portfolio & Admin CMS", Category = "Web Application",
+                Summary = "This website: a portfolio with a secure admin dashboard for managing every section, documents and contact messages.",
+                Description = "An ASP.NET Core application that serves the public site and an admin CMS from one deployment. Content lives in SQLite and is continuously backed up to S3-compatible object storage, so it survives restarts on an ephemeral free-tier host.",
+                Technologies = [".NET 10", "ASP.NET Core", "Entity Framework Core", "SQLite", "JavaScript", "Bootstrap", "MailKit", "Docker", "Render"],
+                Features =
+                [
+                    "Admin CMS for profile, experience, skills, projects, education, achievements, services and documents",
+                    "Contact form with email notifications and an admin inbox",
+                    "Secure file uploads validated by extension and file signature, stored outside the web root",
+                    "Automatic off-site backups of the database and uploads with integrity checks and safe restore on startup",
+                ],
+                Responsibilities =
+                [
+                    "Built the API, public site and admin dashboard with cookie authentication, rate limiting, CSRF protection and security headers.",
+                    "Designed the SQLite backup and restore strategy for Render's ephemeral filesystem, with automated tests.",
+                    "Containerized the app with Docker and deployed it to Render through a Blueprint.",
+                ],
+                LiveUrl = "https://portfolio-6gje.onrender.com",
             });
 
         db.Education.Add(new Education
