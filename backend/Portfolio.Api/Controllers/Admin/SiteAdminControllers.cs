@@ -6,6 +6,7 @@ using Portfolio.Api.Data;
 using Portfolio.Api.Dtos;
 using Portfolio.Api.Entities;
 using Portfolio.Api.Services;
+using Portfolio.Api.Services.Backup;
 
 namespace Portfolio.Api.Controllers.Admin;
 
@@ -192,7 +193,7 @@ public class MessagesController(PortfolioDbContext db) : ControllerBase
 [ApiController]
 [Authorize]
 [Route("api/admin/dashboard")]
-public class DashboardController(PortfolioDbContext db, EmailConfigProvider configProvider) : ControllerBase
+public class DashboardController(PortfolioDbContext db, EmailConfigProvider configProvider, DatabaseBackupService backups) : ControllerBase
 {
     [HttpGet]
     public async Task<object> Get()
@@ -218,6 +219,7 @@ public class DashboardController(PortfolioDbContext db, EmailConfigProvider conf
             hasPublicCv = await db.Documents.AnyAsync(d => d.Kind == DocumentKind.Cv && d.IsPublic),
             emailConfigured = email.IsConfigured,
             emailPasswordConfigured = email.HasPassword,
+            backup = backups.Status,
         };
     }
 }

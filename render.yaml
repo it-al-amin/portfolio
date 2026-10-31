@@ -1,5 +1,12 @@
 # Render Blueprint: Dashboard > New > Blueprint > pick this repo.
-# The free plan has no persistent disk: the SQLite database and uploads reset on every restart or deploy.
+#
+# The Free plan has no persistent disk: the filesystem is wiped on every deploy, restart and idle spin-down.
+# The app therefore keeps SQLite and uploads on the local (ephemeral) disk and copies them to S3-compatible
+# object storage (Cloudflare R2, Backblaze B2, AWS S3). On a fresh start it restores the newest valid backup.
+# See docs/BACKUP_AND_RECOVERY.md for setup and recovery.
+#
+# Variables marked "sync: false" are secrets: Render asks for them when the Blueprint is first created.
+# For an existing service, add them under the service's Environment tab.
 services:
   - type: web
     name: portfolio
@@ -13,3 +20,23 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
+      - key: Database__Path
+        value: /app/App_Data/portfolio.db
+      - key: Storage__RootPath
+        value: /app/App_Data/uploads
+      - key: Backup__Enabled
+        value: "true"
+      - key: Backup__Provider
+        value: S3
+      - key: Backup__ServiceUrl
+        sync: false
+      - key: Backup__Region
+        value: auto
+      - key: Backup__Bucket
+        sync: false
+      - key: Backup__AccessKeyId
+        sync: false
+      - key: Backup__SecretAccessKey
+        sync: false
+      - key: Backup__Prefix
+        value: portfolio/

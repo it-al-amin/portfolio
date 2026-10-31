@@ -10,19 +10,33 @@ using Portfolio.Api.Controllers;
 using Portfolio.Api.Data;
 using Portfolio.Api.Infrastructure;
 using Portfolio.Api.Services;
+using Portfolio.Api.Services.Backup;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-// ---- Database (SQLite). Relative "Data Source" paths resolve against the content root. ----
+// ---- Database (SQLite). Database:Path (env Database__Path) overrides the connection string's "Data Source".
+//      Relative paths resolve against the content root. ----
 var connection = new SqliteConnectionStringBuilder(config.GetConnectionString("Default") ?? "Data Source=App_Data/portfolio.db");
+if (!string.IsNullOrWhiteSpace(config["Database:Path"])) connection.DataSource = config["Database:Path"];
 if (!connection.DataSource.StartsWith(':') && !connection.DataSource.StartsWith("file:"))
 {
     if (!Path.IsPathRooted(connection.DataSource))
         connection.DataSource = Path.Combine(builder.Environment.ContentRootPath, connection.DataSource);
     Directory.CreateDirectory(Path.GetDirectoryName(connection.DataSource)!);
 }
-builder.Services.AddDbContext<PortfolioDbContext>(o => o.UseSqlite(connection.ConnectionString));
+builder.Services.AddSingleton(new DatabaseLocation(connection.DataSource, connection.ConnectionString));
+builder.Services.AddSingleton<BackupSaveChangesInterceptor>();
+builder.Services.AddDbContext<PortfolioDbContext>((sp, o) => o.UseSqlite(connection.ConnectionString)
+    .AddInterceptors(sp.GetRequiredService<BackupSaveChangesInterceptor>()));
+
+// ---- Off-site backups of the database and uploads (required on hosts with an ephemeral disk, e.g. Render Free) ----
+var backupOptions = config.GetSection("Backup").Get<BackupOptions>() ?? new BackupOptions();
+backupOptions.Validate();
+builder.Services.AddSingleton(backupOptions);
+builder.Services.AddSingleton<IObjectStore>(_ => ObjectStoreFactory.Create(backupOptions, builder.Environment.ContentRootPath));
+builder.Services.AddSingleton<DatabaseBackupService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<DatabaseBackupService>());
 
 // ---- Application services ----
 builder.Services.Configure<StorageOptions>(config.GetSection("Storage"));
@@ -136,17 +150,25 @@ app.MapGet("/api/health", async (PortfolioDbContext db) =>
 await InitializeAsync(app);
 app.Run();
 
-// With Database:AutoMigrate (on by default) the SQLite file is created and upgraded on startup.
-// Set it to false to apply migrations yourself with `dotnet ef database update`; the app warns until you do.
+// If the database file is missing and backups are configured, it is first restored from the newest valid backup
+// (an existing file is never overwritten). With Database:AutoMigrate (on by default) the SQLite file is then created
+// and upgraded on startup. Set it to false to apply migrations yourself with `dotnet ef database update`.
 static async Task InitializeAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
+    var backups = services.GetRequiredService<DatabaseBackupService>();
+    await backups.RestoreOnStartupAsync(app.Lifetime.ApplicationStopping);
+
     var db = services.GetRequiredService<PortfolioDbContext>();
     var logger = services.GetRequiredService<ILogger<Program>>();
     var cfg = app.Configuration;
 
-    if (cfg.GetValue<bool>("Database:AutoMigrate")) await MigrateWithRetryAsync(db, logger);
+    if (cfg.GetValue<bool>("Database:AutoMigrate") && (await db.Database.GetPendingMigrationsAsync()).Any())
+    {
+        await MigrateWithRetryAsync(db, logger);
+        backups.MarkDirty();  // migrations bypass SaveChanges
+    }
 
     var pending = (await db.Database.GetPendingMigrationsAsync()).ToList();
     if (pending.Count > 0)

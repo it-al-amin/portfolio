@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
+using Portfolio.Api.Services.Backup;
 
 namespace Portfolio.Api.Services;
 
@@ -9,9 +10,15 @@ public record StoredFile(string StoredFileName, string OriginalFileName, string 
 
 public class FileValidationException(string message) : Exception(message);
 
+/// <summary>The file was valid but could not be copied to backup storage, so it was not kept.</summary>
+public class FileStorageUnavailableException(string message) : FileValidationException(message);
+
 /// <summary>
 /// Stores uploads outside wwwroot under random names. File types are decided by extension allow-list
 /// plus a magic-byte check; the client-supplied content type and file name are never trusted.
+/// When backups are enabled each new file is also copied to object storage before the upload succeeds, because the
+/// local folder may be wiped on restart. Remote copies are kept when a file is deleted, so older database snapshots
+/// can still be restored together with the files they reference.
 /// </summary>
 public partial class FileStorageService
 {
@@ -40,13 +47,30 @@ public partial class FileStorageService
 
     private readonly StorageOptions _options;
     private readonly string _root;
+    private readonly IObjectStore _remote;
+    private readonly ILogger<FileStorageService> _logger;
 
-    public FileStorageService(IOptions<StorageOptions> options, IWebHostEnvironment env)
+    public FileStorageService(IOptions<StorageOptions> options, IWebHostEnvironment env, IObjectStore remote, ILogger<FileStorageService> logger)
     {
         _options = options.Value;
+        _remote = remote;
+        _logger = logger;
         _root = Path.GetFullPath(Path.IsPathRooted(_options.RootPath)
             ? _options.RootPath
             : Path.Combine(env.ContentRootPath, _options.RootPath));
+    }
+
+    public const string RemotePrefix = "uploads/";
+
+    public static string RemoteKey(FileCategory category, string storedFileName) =>
+        $"{RemotePrefix}{category.ToString().ToLowerInvariant()}/{storedFileName}";
+
+    /// <summary>Maps a backup key back to its local path, or null if the key is not one this service writes (guards against path traversal).</summary>
+    public string? LocalPathForRemoteKey(string key)
+    {
+        if (key.Split('/') is not ["uploads", var folder, var name]) return null;
+        if (!Enum.GetValues<FileCategory>().Any(c => c.ToString().ToLowerInvariant() == folder)) return null;
+        return StoredNamePattern().IsMatch(name) ? Path.Combine(_root, folder, name) : null;
     }
 
     public static IReadOnlyCollection<string> AllowedDocumentExtensions => DocumentTypes.Keys;
@@ -90,6 +114,17 @@ public partial class FileStorageService
         {
             File.Delete(path);
             throw new FileValidationException($"The file exceeds the {max / (1024 * 1024)} MB limit.");
+        }
+
+        if (_remote.IsEnabled)
+        {
+            try { await _remote.UploadAsync(RemoteKey(category, storedName), path, type.ContentType, ct); }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                File.Delete(path);
+                _logger.LogError(ex, "Could not copy upload {File} to backup storage; the upload was rejected.", storedName);
+                throw new FileStorageUnavailableException("The file could not be saved to backup storage. Please try again.");
+            }
         }
 
         return new StoredFile(storedName, SafeDisplayName(originalFileName, ext), type.ContentType, new FileInfo(path).Length);
